@@ -552,6 +552,9 @@ public class Graph<T> implements GraphADT<T>
     public int size()
     {
         // To be completed as a Programming Project
+    	
+    	//return the internal number of vertices tracker
+    	return numVertices;
     }
 
     /**
@@ -562,6 +565,9 @@ public class Graph<T> implements GraphADT<T>
     public boolean isEmpty()
     {
         // To be completed as a Programming Project
+    	
+    	// if numVertices is 0 graph is empty
+    	return numVertices == 0;
     }
 
     /**
