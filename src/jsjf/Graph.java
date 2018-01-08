@@ -106,6 +106,17 @@ public class Graph<T> implements GraphADT<T>
     public void removeEdge(int index1, int index2)
     {
         // To be completed as a Programming Project
+    	
+    	//if the indexes are valid
+    	if (indexIsValid(index1) && (indexIsValid(index2))) {
+    		
+    		//set their positions to false to remove the edge
+    		adjMatrix[index1][index2] = false;
+    		adjMatrix[index2][index1] = false;
+    		
+    		//increment the modification counter
+    		modCount++;
+    	}
     }
 
     /**
@@ -128,6 +139,9 @@ public class Graph<T> implements GraphADT<T>
     public void removeEdge(T vertex1, T vertex2)
     {
         // To be completed as a Programming Project
+    	
+    	// call remove edge with the given indexes
+    	removeEdge(getIndex(vertex1), getIndex(vertex2));
     }
 
     /**
@@ -137,6 +151,26 @@ public class Graph<T> implements GraphADT<T>
     public void addVertex()
     {
         // To be completed as a Programming Project
+    	
+    	//if the array is full expand capacity
+    	if ((numVertices + 1) == adjMatrix.length) {
+    		expandCapacity();
+    	}
+    	
+    	//null the new vertex
+    	vertices[numVertices] = null;
+    	
+    	//set the edges to this vertex to false
+    	for (int i = 0; i < numVertices; i++) {
+    		adjMatrix[numVertices][i] = false;
+    		adjMatrix[i][numVertices] = false;
+    	}
+    	
+    	//increment the number of vertices
+    	numVertices++;
+    	//increment the modification count
+    	modCount++;
+    	
     }
 
     /**
@@ -169,6 +203,30 @@ public class Graph<T> implements GraphADT<T>
     public void removeVertex(int index)
     {
         // To be completed as a Programming Project
+    	
+    	//if the index is valid
+    	if (indexIsValid(index)) {
+    		
+    		//decrement the number of vertices
+    		numVertices--;
+    		
+    		//remove the vertex at the given index
+    		//by shifting vertices array to eliminate the gap
+    		for (int i = index; i<numVertices; i++) {
+    			vertices[i] = vertices[i+1];
+    		}
+    		  		
+    		//adjust the adjacency matrix to remove the gap
+
+
+    		for (int i =index; i<numVertices; i++) {
+    			for(int j=0; j<numVertices; j++) {
+    				adjMatrix[i][j] = adjMatrix[i+1][j];
+    				adjMatrix[j][i] = adjMatrix[j][i+1];
+    			}
+    			
+    		}
+       	}
     }
 
     /**
@@ -179,6 +237,9 @@ public class Graph<T> implements GraphADT<T>
     public void removeVertex(T vertex)
     {
         // To be completed as a Programming Project
+    	
+    	//call remove vertex with the index
+    	removeVertex(getIndex(vertex));
     }
 
     /**
@@ -578,6 +639,23 @@ public class Graph<T> implements GraphADT<T>
     public boolean isConnected()
     {
         // To be completed as a Programming Project
+
+    	// get an iterator, doesn't matter if breadth or depth first
+        Iterator<T> iterator = iteratorDFS(0);
+        
+        //count of vertices returned by iterator
+        int countIterated = 0;
+        
+        // while the iterator has more 
+        while (iterator.hasNext()) {
+        	//move to the next vertex
+        	iterator.next();
+        	//increment the count of vertices iterated over
+        	countIterated++;
+        }
+        
+        //if the iterator returned all the vertices it is connected
+        return countIterated == numVertices;
     }
 
     /**
@@ -590,6 +668,25 @@ public class Graph<T> implements GraphADT<T>
     public int getIndex(T vertex)
     {
         // To be completed as a Programming Project
+    	
+    	// -1 if result was not found
+    	int result = -1;
+    	
+    	//start at position 0
+    	int current = 0;
+    	
+    	//iterate through the array of vertices while not found
+    	while ((result == -1) && (current < vertices.length)) {
+    		
+    		//if the current ones is the target, update the result
+    		if (vertices[current].equals(vertex)) {
+    			result = current;
+    		}
+    		//increment the counter
+    		current++;
+    	}
+    	
+    	return result;
     }
 
     /**
@@ -601,6 +698,9 @@ public class Graph<T> implements GraphADT<T>
     protected boolean indexIsValid(int index)
     {
         // To be completed as a Programming Project
+    	
+    	// the index is valid if it's within the bounds currently being used
+    	return (index >= 0) && (index <= numVertices);
     }
 
     /**
@@ -611,6 +711,16 @@ public class Graph<T> implements GraphADT<T>
     public Object[] getVertices()
     {
         // To be completed as a Programming Project
+
+    	// new array of vertices
+    	// remove methods re-adjust arrays so there are no gaps
+    	Object[] result = new Object[numVertices];
+    	
+    	for (int i=0; i<numVertices; i++) {
+    		result[i] = vertices[i];
+    	}
+    	
+    	return result;
     }
     
     /**
