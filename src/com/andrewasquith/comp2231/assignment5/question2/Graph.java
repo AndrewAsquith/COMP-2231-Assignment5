@@ -1,10 +1,12 @@
-package jsjf;
+package com.andrewasquith.comp2231.assignment5.question2;
 
+import jsjf.ArrayUnorderedList;
+import jsjf.GraphADT;
+import jsjf.QueueADT;
+import jsjf.StackADT;
+import jsjf.UnorderedListADT;
 import jsjf.exceptions.*;
 import java.util.*;
-
-import com.andrewasquith.comp2231.assignment5.question2.LinkedQueue;
-import com.andrewasquith.comp2231.assignment5.question2.LinkedStack;
 
 /**
  * Graph represents an adjacency matrix implementation of a graph.
@@ -107,6 +109,11 @@ public class Graph<T> implements GraphADT<T>
     {
         // To be completed as a Programming Project
     	
+    	// if the graph is empty, throw
+    	if (isEmpty()) {
+    		throw new EmptyCollectionException("Graph");
+    	}
+    	
     	//if the indexes are valid
     	if (indexIsValid(index1) && (indexIsValid(index2))) {
     		
@@ -116,6 +123,9 @@ public class Graph<T> implements GraphADT<T>
     		
     		//increment the modification counter
     		modCount++;
+    	} else {
+    		//one or both of the vertex indexes are invalid, throw
+    		throw new ElementNotFoundException("Graph");
     	}
     }
 
@@ -139,6 +149,11 @@ public class Graph<T> implements GraphADT<T>
     public void removeEdge(T vertex1, T vertex2)
     {
         // To be completed as a Programming Project
+    	
+    	// if the graph is empty, throw
+    	if (isEmpty()) {
+    		throw new EmptyCollectionException("Graph");
+    	}
     	
     	// call remove edge with the given indexes
     	removeEdge(getIndex(vertex1), getIndex(vertex2));
@@ -204,9 +219,15 @@ public class Graph<T> implements GraphADT<T>
     {
         // To be completed as a Programming Project
     	
+    	
+    	// if the graph is empty, throw
+    	if (isEmpty()) {
+    		throw new EmptyCollectionException("Graph");
+    	}
+    	
     	//if the index is valid
     	if (indexIsValid(index)) {
-    		
+    		    		
     		//decrement the number of vertices
     		numVertices--;
     		
@@ -216,16 +237,28 @@ public class Graph<T> implements GraphADT<T>
     			vertices[i] = vertices[i+1];
     		}
     		  		
-    		//adjust the adjacency matrix to remove the gap
+    		//re-adjust the adjacency matrix 
 
-
+    		//first pass J goes to numVertices to capture edges
+    		// now outside the bounds
+    		for (int i =index; i<numVertices; i++) {
+    			for(int j=0; j<=numVertices; j++) {
+    				adjMatrix[i][j] = adjMatrix[i+1][j];
+    			}
+    		}
+    		
+    		//second pass J only need to go to numVertices - 1
     		for (int i =index; i<numVertices; i++) {
     			for(int j=0; j<numVertices; j++) {
-    				adjMatrix[i][j] = adjMatrix[i+1][j];
     				adjMatrix[j][i] = adjMatrix[j][i+1];
     			}
-    			
     		}
+    		
+    		//increase the modification count
+    		modCount++;
+       	} else {
+       		//element not found or index otherwise invalid so throw
+       		throw new ElementNotFoundException("Graph");
        	}
     }
 
@@ -237,6 +270,11 @@ public class Graph<T> implements GraphADT<T>
     public void removeVertex(T vertex)
     {
         // To be completed as a Programming Project
+    	
+    	// if the graph is empty, throw
+    	if (isEmpty()) {
+    		throw new EmptyCollectionException("Graph");
+    	}
     	
     	//call remove vertex with the index
     	removeVertex(getIndex(vertex));
