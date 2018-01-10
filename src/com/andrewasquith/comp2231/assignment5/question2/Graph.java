@@ -886,5 +886,22 @@ public class Graph<T> implements GraphADT<T>
             throw new UnsupportedOperationException();
         }
     }
+
+    /**
+     * Helper method to return a representation of the adjacency matrix
+     * That is sized appropriately to compare in test cases
+     * @return boolean array of the adjacency matrix
+     */
+	protected boolean[][] getAdjacencyMatrix() {
+		boolean[][] matrix = new boolean[numVertices][numVertices];
+		
+		for (int i = 0; i<numVertices; i++) {
+			for (int j= 0 ; j<numVertices; j++) {
+				matrix[i][j] = adjMatrix[i][j];
+			}
+		}
+		
+		return matrix;
+	}
 }
 
