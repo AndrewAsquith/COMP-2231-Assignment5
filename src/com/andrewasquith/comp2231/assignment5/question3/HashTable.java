@@ -8,6 +8,9 @@ public class HashTable {
 
 	private static double DEFAULT_LOAD_FACTOR = 0.8;
 
+	/**
+	 * Protected threshold value accessible to unit tests
+	 */
 	protected int threshold;
 
 	private HashTableEntry[] hashTable;
@@ -15,9 +18,9 @@ public class HashTable {
 	/**
 	 * current number of elements in the hashtable
 	 */
-	private int size;
+	private int numberOfElements;
 
-	private double loadFactor;
+	
 
 	public HashTable() {
 
@@ -25,24 +28,25 @@ public class HashTable {
 		threshold = calculateThreshold(DEFAULT_INITIAL_SIZE, DEFAULT_LOAD_FACTOR);
 	}
 
-	public HashTable(int initialSize) {
+	/**
+	 * Protected Constructor allowing unit tests to create a smaller table
+	 * to exercise functionality like resize and threshold without going
+	 * all the way to DEFAULT_SIZE
+	 * @param initialSize
+	 */
+	protected HashTable(int initialSize) {
 		hashTable = new HashTableEntry[initialSize];
 		threshold = calculateThreshold(initialSize, DEFAULT_LOAD_FACTOR);
 	}
 
-	public HashTable(int initialSize, double lFactor) {
-		hashTable = new HashTableEntry[initialSize];
-		loadFactor = lFactor;
-		threshold = calculateThreshold(initialSize, lFactor);
-	}
 
-	protected int calculateThreshold(int size, double loadFactor) {
+	private int calculateThreshold(int size, double loadFactor) {
 		return (int) (size * loadFactor);
 	}
 
 	private void resizeIfNecessary() {
 
-		if (size >= threshold) {
+		if (numberOfElements >= threshold) {
 			resize();
 		}
 	}
@@ -63,31 +67,35 @@ public class HashTable {
 		for (int i = 0; i < originalTable.length; i++) {
 			if (originalTable[i] != null && !originalTable[i].isDeleted()) {
 				String key = originalTable[i].getKey();
-				int newPosition = createPositionForKey(key);
+				int newPosition = calculatePositionForKey(key);
 				hashTable[newPosition] = originalTable[i];
 			}
 		}
 
 		// recalculate threshold
-		threshold = calculateThreshold(newSize, loadFactor);
+		threshold = calculateThreshold(newSize, DEFAULT_LOAD_FACTOR);
 
 	}
+	
+	public int size() {
+		return numberOfElements;
+	}
 
-	public void Add(String socialInsuranceNumber, String name) {
+	public void add(String socialSecurityNumber, String name) {
 		// all ssns should follow the format AAA-BB-CCCC
 		String ssnPattern = "\\d{3}-\\d{2}-\\d{4}";
-		if (!socialInsuranceNumber.matches(ssnPattern)) {
-			throw new RuntimeException("Find a better Exception for non matching regex");
+		if (!socialSecurityNumber.matches(ssnPattern)) {
+			throw new IllegalArgumentException("SSN should be of the format ###-##-####");
 		}
 
 		// get a position for this entry
-		int entryPosition = createPositionForKey(socialInsuranceNumber);
+		int entryPosition = calculatePositionForKey(socialSecurityNumber);
 
 		// store the entry in our entry class
-		hashTable[entryPosition] = new HashTableEntry(socialInsuranceNumber, name);
+		hashTable[entryPosition] = new HashTableEntry(socialSecurityNumber, name);
 
-		// increase the reported size of the table
-		size++;
+		// increase the number of elements
+		numberOfElements++;
 
 		// resize and rehash if necessary
 		resizeIfNecessary();
@@ -118,6 +126,7 @@ public class HashTable {
 		}
 		
 		hashTable[index].markDeleted();
+		numberOfElements--;
 		return hashTable[index].getValue();
 		
 	}
@@ -147,7 +156,7 @@ public class HashTable {
 		}
 
 		// double hash to get the second possible position
-		int secondPosition = initialPosition + secondaryHash(key);
+		int secondPosition = (initialPosition + secondaryHash(key)) % hashTable.length;
 
 		// if the second position is empty, key does not exist
 		if (hashTable[secondPosition] == null) {
@@ -159,10 +168,8 @@ public class HashTable {
 			return secondPosition;
 		}
 
-		// key did not exist at first or second possibilities, need to check the
-		// rest
-		// using an open addressing approach of h(e) = p1 + (i * p2) where i >=
-		// 2
+		// key did not exist at first or second possibilities, need to check the rest
+		// using an open addressing approach of h(e) = p1 + (i * p2) where i >= 2
 
 		int counter = 2;
 		// still need to divide by total length so we don't run out of bounds
@@ -188,7 +195,7 @@ public class HashTable {
 
 	}
 
-	private int createPositionForKey(String key) {
+	private int calculatePositionForKey(String key) {
 
 		int initialPosition = primaryHash(key);
 		int secondPosition = initialPosition;
@@ -197,7 +204,7 @@ public class HashTable {
 		// collision on primary hash routine
 		// entry is not null and has not been deleted
 		if (hashTable[initialPosition] != null && !hashTable[initialPosition].isDeleted()) {
-			secondPosition = initialPosition + secondaryHash(key);
+			secondPosition = (initialPosition + secondaryHash(key)) % hashTable.length;
 			finalPosition = secondPosition;
 		}
 
@@ -232,7 +239,7 @@ public class HashTable {
 		return keyAsInteger % hashTable.length;
 	}
 
-	private class HashTableEntry implements Comparable<HashTableEntry> {
+	private class HashTableEntry {
 
 		protected String key;
 		protected String value;
@@ -259,11 +266,6 @@ public class HashTable {
 
 		public void markDeleted() {
 			isDeleted = true;
-		}
-
-		@Override
-		public int compareTo(HashTableEntry o) {
-			return key.compareTo(o.getKey());
 		}
 	}
 }

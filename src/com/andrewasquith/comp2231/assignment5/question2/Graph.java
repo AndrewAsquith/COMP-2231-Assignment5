@@ -714,7 +714,7 @@ public class Graph<T> implements GraphADT<T>
     	int current = 0;
     	
     	//iterate through the array of vertices while not found
-    	while ((result == -1) && (current < vertices.length)) {
+    	while ((result == -1) && (current < numVertices)) {
     		
     		//if the current ones is the target, update the result
     		if (vertices[current].equals(vertex)) {

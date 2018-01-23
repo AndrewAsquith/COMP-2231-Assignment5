@@ -8,6 +8,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import jsjf.exceptions.ElementNotFoundException;
+import jsjf.exceptions.EmptyCollectionException;
+
 public class GraphTests {
 
 	private Graph<String> graph;
@@ -169,6 +172,41 @@ public class GraphTests {
 		assertTrue(iterator.hasNext());
 		assertEquals("B", iterator.next());
 		assertFalse(iterator.hasNext());
+	}
+	
+	@Test
+	public final void testIteratorFor4VertexGraphAfterRemovingOne() {
+		graph.addVertex("A");
+		graph.addVertex("B");
+		graph.addVertex("C");
+		graph.addVertex("D");
+		graph.addEdge("A",  "B");
+		graph.addEdge("B",  "C");
+		graph.addEdge("B", "D");
+		graph.removeVertex("C");
+		Iterator<String> initialIterator = graph.iteratorBFS("A");
+		assertEquals("A", initialIterator.next());
+		assertEquals("B", initialIterator.next());
+		assertEquals("D", initialIterator.next());
+	}
+	
+	@Test(expected = EmptyCollectionException.class)
+	public final void testRemoveEdgeThrowsOnEmptyCollection() {
+		graph.removeEdge(1, 2);
+	}
+	
+	@Test(expected = ElementNotFoundException.class) 
+	public final void testRemoveEdgeThrowsWhenAVertexIsInvalid() 	{
+		graph.addVertex("A");
+		graph.addVertex("B");
+		graph.addVertex("C");
+		graph.addEdge("A", "B");
+		graph.removeEdge("A", "D");
+	}
+	
+	@Test(expected = EmptyCollectionException.class) 
+	public final void testRemoveVertexThrowsOnEmptyCollection() {
+		graph.removeVertex("B");
 	}
 
 }
