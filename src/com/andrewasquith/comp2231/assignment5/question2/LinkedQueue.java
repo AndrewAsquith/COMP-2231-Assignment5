@@ -2,7 +2,8 @@
  * @author Andrew Asquith
  * COMP 2231
  * Assignment 5
- * Question 2 - Implementation of Graph with adjacency matrix
+ * Question 2
+ * Implementation of a Graph using an adjacency matrix
  */
 package com.andrewasquith.comp2231.assignment5.question2;
 
@@ -21,6 +22,7 @@ import jsjf.exceptions.EmptyCollectionException;
 
 /**
  * Simple linked list implementation of a queue to support the adjacency matrix graph
+ * Imported from an earlier assignment
  *
  * @param <T>
  *            The type of element the queue will hold

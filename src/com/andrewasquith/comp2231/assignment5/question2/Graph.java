@@ -1,5 +1,15 @@
+/**
+ * @author Andrew Asquith
+ * COMP 2231
+ * Assignment 5
+ * Question 2
+ * Implementation of a Graph using an adjacency matrix
+ */
 package com.andrewasquith.comp2231.assignment5.question2;
 
+/**
+ * Import the array unordered list used by the iterator
+ */
 import jsjf.ArrayUnorderedList;
 import jsjf.GraphADT;
 import jsjf.QueueADT;
@@ -16,10 +26,28 @@ import java.util.*;
  */
 public class Graph<T> implements GraphADT<T>
 {
-    protected final int DEFAULT_CAPACITY = 5;
-    protected int numVertices;    // number of vertices in the graph
-    protected boolean[][] adjMatrix;    // adjacency matrix
-    protected T[] vertices;    // values of vertices
+	/**
+	 * Default capacity of the Graph
+	 */
+    private final int DEFAULT_CAPACITY = 5;
+    /**
+     * The current number of vertices in the graph
+     */
+    private int numVertices;    
+
+    /**
+     * The adjacency matrix representing the graph edges
+     */
+    private boolean[][] adjMatrix;    
+
+    /**
+     * Array containing the values of the vertices
+     */
+    protected T[] vertices;    
+
+    /**
+     * Modification counter for the iterator
+     */
     protected int modCount;
 
     /**

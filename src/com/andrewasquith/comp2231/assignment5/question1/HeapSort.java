@@ -1,5 +1,18 @@
+/**
+ * @author Andrew Asquith
+ * COMP 2231
+ * Assignment 5
+ * Question 1
+ * An in place Heap Sort implementation
+ */
 package com.andrewasquith.comp2231.assignment5.question1;
 
+/**
+ * Generic Heap Sort class that performs a sort on an
+ * array without extra allocations
+ *
+ * @param <T> The type of element
+ */
 public class HeapSort<T> {
 
 	/**
@@ -46,9 +59,7 @@ public class HeapSort<T> {
 
 			// re-heapify what remains
 			maxHeapify(data, 0, last - 1);
-
 		}
-
 	}
 
 	/**
@@ -87,7 +98,5 @@ public class HeapSort<T> {
 			// then need to heapify the subtree after the swap
 			maxHeapify(data, largest, end);
 		}
-
 	}
-
 }
